@@ -101,7 +101,9 @@ for (n in 1:5) {
                                       "hierarchical" = "hierarch")
   val_results[[n]]$method = paste(val_results[[n]]$clustAlgo, val_results[[n]]$measure, sep = ", ")
   val_results[[n]]$methodNorm = paste(val_results[[n]]$clustAlgo, val_results[[n]]$measure, val_results[[n]]$normMethod, sep = ", ")
+  # functions for SPRING and propr have inbuilt normalization; include this information here 
   val_results[[n]]$methodNorm = gsub(pattern = "spring, none", replacement = "spring, mclr", x = val_results[[n]]$methodNorm)
+  val_results[[n]]$methodNorm = gsub(pattern = "propr, none", replacement = "propr, clr", x = val_results[[n]]$methodNorm)
   val_results[[n]]$methodSpars = paste(val_results[[n]]$clustAlgo, val_results[[n]]$measure, val_results[[n]]$normMethod, val_results[[n]]$sparsMethod, sep = ", ")
   val_results[[n]]$ari = val_results[[n]]$ariDiscov
   
@@ -152,29 +154,31 @@ for (n in 1:5) {
   levels_norm = c("hierarch, pearson, clr", "hierarch, pearson, VST", "hierarch, pearson, mclr",
                   "hierarch, spearman, clr", "hierarch, spearman, VST", "hierarch, spearman, mclr",
                   "hierarch, latentcor, mclr", 
-                  "hierarch, propr, none",
+                  "hierarch, propr, clr",
                   "spectral, pearson, clr", "spectral, pearson, VST", "spectral, pearson, mclr", 
                   "spectral, spearman, clr", "spectral, spearman, VST","spectral, spearman, mclr",
                   "spectral, latentcor, mclr", 
-                  "spectral, propr, none",
+                  "spectral, propr, clr",
                   "fg.modular, pearson, clr", "fg.modular, pearson, VST", "fg.modular, pearson, mclr",
                   "fg.modular, spearman, clr", "fg.modular, spearman, VST", "fg.modular, spearman, mclr", 
                   "fg.modular, spring, mclr", 
-                  "fg.modular, propr, none",
+                  "fg.modular, propr, clr",
                   "louvain, pearson, clr", "louvain, pearson, VST", "louvain, pearson, mclr", 
                   "louvain, spearman, clr", "louvain, spearman, VST", "louvain, spearman, mclr",  
                   "louvain, spring, mclr", 
-                  "louvain, propr, none",
+                  "louvain, propr, clr",
                   "manta, pearson, clr", "manta, pearson, VST", "manta, pearson, mclr", 
                   "manta, spearman, clr", "manta, spearman, VST", "manta, spearman, mclr", 
                   "manta, spring, mclr", 
-                  "manta, propr, none")
+                  "manta, propr, clr")
   
   res$methodNorm = paste(res$clustAlgo, res$measure, res$normMethod, sep = ", ")
   res$methodNorm = gsub(pattern = "spring, none", replacement = "spring, mclr", x = res$methodNorm)
+  res$methodNorm = gsub(pattern = "propr, none", replacement = "propr, clr", x = res$methodNorm)
   res$methodNorm = factor(res$methodNorm, ordered = TRUE, levels = levels_norm)
   
   res$bestMethodNorm = gsub(pattern = "spring, none", replacement = "spring, mclr", x = res$bestMethodNorm)
+  res$bestMethodNorm = gsub(pattern = "propr, none", replacement = "propr, clr", x = res$bestMethodNorm)
   res$bestMethodNorm = factor(res$bestMethodNorm, ordered = TRUE, levels = levels_norm)
   
   
@@ -242,7 +246,7 @@ for (n in 1:5) {
                     "fg.modular, spearman, VST, t-test", "fg.modular, spearman, VST, threshold", 
                     "fg.modular, spearman, mclr, t-test", "fg.modular, spearman, mclr, threshold", 
                     "fg.modular, spring, mclr, NB selection",
-                    "fg.modular, propr, none, threshold",
+                    "fg.modular, propr, clr, threshold",
                     "louvain, pearson, clr, t-test", "louvain, pearson, clr, threshold", 
                     "louvain, pearson, VST, t-test", "louvain, pearson, VST, threshold", 
                     "louvain, pearson, mclr, t-test", "louvain, pearson, mclr, threshold", 
@@ -250,7 +254,7 @@ for (n in 1:5) {
                     "louvain, spearman, VST, t-test", "louvain, spearman, VST, threshold", 
                     "louvain, spearman, mclr, t-test", "louvain, spearman, mclr, threshold", 
                     "louvain, spring, mclr, NB selection", 
-                    "louvain, propr, none, threshold",
+                    "louvain, propr, clr, threshold",
                     "manta, pearson, clr, t-test", "manta, pearson, clr, threshold", 
                     "manta, pearson, VST, t-test", "manta, pearson, VST, threshold", 
                     "manta, pearson, mclr, t-test", "manta, pearson, mclr, threshold", 
@@ -258,13 +262,16 @@ for (n in 1:5) {
                     "manta, spearman, VST, t-test", "manta, spearman, VST, threshold", 
                     "manta, spearman, mclr, t-test", "manta, spearman, mclr, threshold", 
                     "manta, spring, mclr, NB selection", 
-                    "manta, propr, none, threshold")
+                    "manta, propr, clr, threshold")
   
   res$methodSpars = paste(res$clustAlgo, res$measure, res$normMethod, res$sparsMethod, sep = ", ")
   res$methodSpars = gsub(pattern = "spring, none, none", replacement = "spring, mclr, NB selection", x = res$methodSpars)
+  res$methodSpars = gsub(pattern = "propr, none, threshold", replacement = "propr, clr, threshold", x = res$methodSpars)
   res$methodSpars = factor(res$methodSpars, ordered = TRUE, levels = levels_sparse)
   
   res$bestMethodSpars = gsub(pattern = "spring, none, none", replacement = "spring, mclr, NB selection", x = res$bestMethodSpars)
+  res$bestMethodSpars = gsub(pattern = "propr, none, threshold", replacement = "propr, clr, threshold", x = res$bestMethodSpars)
+  
   # for the splits in which hierarchical or spectral clustering was chosen as the best method,
   # replace bestMethodSpars with an auxiliary "fake value" (here: "manta, pearson, clr, t-test")
   # These fake values will not be seen in the final plot,
@@ -397,7 +404,9 @@ for (n in 1:5) {
   val_results[[n]]$methodSpars = paste(val_results[[n]]$measure, val_results[[n]]$normMethod, val_results[[n]]$sparsMethod, sep = ", ")
   val_results[[n]]$nrHubs = val_results[[n]]$nrHubsDiscov
   val_results[[n]]$method[val_results[[n]]$method == "spring, none"] = "spring, mclr"
+  val_results[[n]]$method[val_results[[n]]$method == "propr, none"] = "propr, clr"
   val_results[[n]]$methodSpars[val_results[[n]]$methodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  val_results[[n]]$methodSpars[val_results[[n]]$methodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   
   hub_results[[n]][[1]]$res$split = 1
   hub_results[[n]][[1]]$res$highestNrHubs = val_results[[n]][1,"nrHubsDiscov"]
@@ -414,26 +423,29 @@ for (n in 1:5) {
   
   res$method = paste(res$measure, res$normMethod, sep = ", ")
   res$method[res$method == "spring, none"] = "spring, mclr"
+  res$method[res$method == "propr, none"] = "propr, clr"
   res$method = factor(res$method, ordered = TRUE, levels = c("pearson, clr", "pearson, VST", "pearson, mclr", 
                                                              "spearman, clr", "spearman, VST", "spearman, mclr",
-                                                             "spring, mclr", "propr, none"))
+                                                             "spring, mclr", "propr, clr"))
   res$methodSpars = paste(res$measure, res$normMethod, res$sparsMethod, sep = ", ")
   res$methodSpars[res$methodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  res$methodSpars[res$methodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   res$methodSpars = factor(res$methodSpars, ordered = TRUE, levels = c("pearson, clr, t-test", "pearson, clr, threshold",
                                                                        "pearson, VST, t-test", "pearson, VST, threshold",
                                                                        "pearson, mclr, t-test", "pearson, mclr, threshold",
                                                                        "spearman, clr, t-test", "spearman, clr, threshold",
                                                                        "spearman, VST, t-test", "spearman, VST, threshold",
                                                                        "spearman, mclr, t-test", "spearman, mclr, threshold",
-                                                                       "spring, mclr, NB selection", "propr, none, threshold"))
+                                                                       "spring, mclr, NB selection", "propr, clr, threshold"))
   res$bestMethodSpars[res$bestMethodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  res$bestMethodSpars[res$bestMethodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   res$bestMethodSpars = factor(res$bestMethodSpars, ordered = TRUE, levels = c("pearson, clr, t-test", "pearson, clr, threshold",
                                                                                "pearson, VST, t-test", "pearson, VST, threshold",
                                                                                "pearson, mclr, t-test", "pearson, mclr, threshold",
                                                                                "spearman, clr, t-test", "spearman, clr, threshold",
                                                                                "spearman, VST, t-test", "spearman, VST, threshold",
                                                                                "spearman, mclr, t-test", "spearman, mclr, threshold",
-                                                                               "spring, mclr, NB selection", "propr, none, threshold"))
+                                                                               "spring, mclr, NB selection", "propr, clr, threshold"))
   
   
   p1a[[n]] = ggplot(data = res, aes(x = method, y = nrHubs)) +
@@ -468,20 +480,21 @@ for (n in 1:5) {
   
   val_result$method = factor(val_result$method, ordered = TRUE, levels = levels(res$method))
   val_result$methodSpars[val_result$methodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  val_result$methodSpars[val_result$methodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   val_result$methodSpars = factor(val_result$methodSpars, ordered = TRUE, levels = c("pearson, clr, t-test", "pearson, clr, threshold",
                                                                                      "pearson, VST, t-test", "pearson, VST, threshold",
                                                                                      "pearson, mclr, t-test", "pearson, mclr, threshold",
                                                                                      "spearman, clr, t-test", "spearman, clr, threshold",
                                                                                      "spearman, VST, t-test", "spearman, VST, threshold",
                                                                                      "spearman, mclr, t-test", "spearman, mclr, threshold",
-                                                                                     "spring, mclr, NB selection", "propr, none, threshold"))
+                                                                                     "spring, mclr, NB selection", "propr, clr, threshold"))
   levels(val_result$methodSpars) = c("pears., clr, t-test", "pears., clr, thresh.",
                                      "pears., VST, t-test", "pears., VST, thresh.",
                                      "pears., mclr, t-test", "pears., mclr, thresh.",
                                      "spear., clr, t-test", "spear., clr, thresh.",
                                      "spear., VST, t-test", "spear., VST, thresh.",
                                      "spear., mclr, t-test", "spear., mclr, thresh.",
-                                     "spring, mclr, NB select.", "propr, none, thresh.")
+                                     "spring, mclr, NB select.", "propr, clr, thresh.")
   
   
   p2[[n]] = ggplot(val_result) +
@@ -570,7 +583,9 @@ for (n in 1:3) {
   val_results[[n]]$methodSpars = paste(val_results[[n]]$measure, val_results[[n]]$normMethod, val_results[[n]]$sparsMethod, sep = ", ")
   val_results[[n]]$gcd = val_results[[n]]$gcdDiscov
   val_results[[n]]$method[val_results[[n]]$method == "spring, none"] = "spring, mclr"
+  val_results[[n]]$method[val_results[[n]]$method == "propr, none"] = "propr, clr"
   val_results[[n]]$methodSpars[val_results[[n]]$methodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  val_results[[n]]$methodSpars[val_results[[n]]$methodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   
   antibiotics_results[[n]][[1]]$res$split = 1
   antibiotics_results[[n]][[1]]$res$largestGCD = val_results[[n]][1,"gcdDiscov"]
@@ -587,26 +602,29 @@ for (n in 1:3) {
   
   res$method = paste(res$measure, res$normMethod, sep = ", ")
   res$method[res$method == "spring, none"] = "spring, mclr"
+  res$method[res$method == "propr, none"] = "propr, clr"
   res$method = factor(res$method, ordered = TRUE, levels = c("pearson, clr", "pearson, VST", "pearson, mclr", 
                                                              "spearman, clr", "spearman, VST", "spearman, mclr",
-                                                             "spring, mclr", "propr, none"))
+                                                             "spring, mclr", "propr, clr"))
   res$methodSpars = paste(res$measure, res$normMethod, res$sparsMethod, sep = ", ")
   res$methodSpars[res$methodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  res$methodSpars[res$methodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   res$methodSpars = factor(res$methodSpars, ordered = TRUE, levels = c("pearson, clr, t-test", "pearson, clr, threshold",
                                                                        "pearson, VST, t-test", "pearson, VST, threshold",
                                                                        "pearson, mclr, t-test", "pearson, mclr, threshold",
                                                                        "spearman, clr, t-test", "spearman, clr, threshold",
                                                                        "spearman, VST, t-test", "spearman, VST, threshold",
                                                                        "spearman, mclr, t-test", "spearman, mclr, threshold",
-                                                                       "spring, mclr, NB selection", "propr, none, threshold"))
+                                                                       "spring, mclr, NB selection", "propr, clr, threshold"))
   res$bestMethodSpars[res$bestMethodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  res$bestMethodSpars[res$bestMethodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   res$bestMethodSpars = factor(res$bestMethodSpars, ordered = TRUE, levels = c("pearson, clr, t-test", "pearson, clr, threshold",
                                                                                "pearson, VST, t-test", "pearson, VST, threshold",
                                                                                "pearson, mclr, t-test", "pearson, mclr, threshold",
                                                                                "spearman, clr, t-test", "spearman, clr, threshold",
                                                                                "spearman, VST, t-test", "spearman, VST, threshold",
                                                                                "spearman, mclr, t-test", "spearman, mclr, threshold",
-                                                                               "spring, mclr, NB selection", "propr, none, threshold"))
+                                                                               "spring, mclr, NB selection", "propr, clr, threshold"))
   
   
   p1a[[n]] = ggplot(data = res, aes(x = method, y = gcd)) +
@@ -640,20 +658,21 @@ for (n in 1:3) {
   
   val_result$method = factor(val_result$method, ordered = TRUE, levels = levels(res$method))
   val_result$methodSpars[val_result$methodSpars == "spring, none, none"] = "spring, mclr, NB selection"
+  val_result$methodSpars[val_result$methodSpars == "propr, none, threshold"] = "propr, clr, threshold"
   val_result$methodSpars = factor(val_result$methodSpars, ordered = TRUE, levels = c("pearson, clr, t-test", "pearson, clr, threshold",
                                                                                      "pearson, VST, t-test", "pearson, VST, threshold",
                                                                                      "pearson, mclr, t-test", "pearson, mclr, threshold",
                                                                                      "spearman, clr, t-test", "spearman, clr, threshold",
                                                                                      "spearman, VST, t-test", "spearman, VST, threshold",
                                                                                      "spearman, mclr, t-test", "spearman, mclr, threshold",
-                                                                                     "spring, mclr, NB selection", "propr, none, threshold"))
+                                                                                     "spring, mclr, NB selection", "propr, clr, threshold"))
   levels(val_result$methodSpars) = c("pears., clr, t-test", "pears., clr, thresh.",
                                      "pears., VST, t-test", "pears., VST, thresh.",
                                      "pears., mclr, t-test", "pears., mclr, thresh.",
                                      "spear., clr, t-test", "spear., clr, thresh.",
                                      "spear., VST, t-test", "spear., VST, thresh.",
                                      "spear., mclr, t-test", "spear., mclr, thresh.",
-                                     "spring, mclr, NB select.", "propr, none, thresh.")
+                                     "spring, mclr, NB select.", "propr, clr, thresh.")
   
   
   p2[[n]] = ggplot(val_result) +
