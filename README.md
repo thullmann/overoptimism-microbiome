@@ -88,7 +88,8 @@ We used R version 4.0.4 and the following R package versions:
 ggnewscale_0.4.5      ggbeeswarm_0.7.0.9000 gridExtra_2.3         ggplot2_3.3.3        
 orca_1.1-1            reticulate_1.24       dplyr_1.0.2           readxl_1.3.1         
 mclust_5.4.7          igraph_1.2.6          mixedCCA_1.4.6        MASS_7.3-53.1        
-NetCoMi_1.0.2         SpiecEasi_1.1.0       phyloseq_1.34.0      
+NetCoMi_1.0.2         SpiecEasi_1.1.0       phyloseq_1.34.0       cluster_2.1.4
+DirichletMultinomial_1.32.0
 
 ```
 
