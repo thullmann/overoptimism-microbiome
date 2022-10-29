@@ -73,12 +73,49 @@ Differential network analysis:
 source("code/50 splits/researchtask3.R")
 ```
 
+Clustering samples:
+```
+source("code/50 splits/researchtask4.R")
+```
+
 ### Generating descriptive statistics and plots
 
 ```
 source("code/analyse results/generate_statistics_and_plots.R")
 ```
-This script generates the tables in the `descriptive statistics` folder (Tables 1-3 in the manuscript), as well as the figures in the `plots` folder. 
+This script generates the tables in the `descriptive statistics` folder (Tables 1-4 in the manuscript), as well as the figures in the `plots` folder. 
+
+### Analyses with reduced numbers of method combinations
+
+The results for the analyses with less method combinations can be obtained by running the following scripts:
+
+Clustering bacterial genera:
+```
+source("code/50 splits/reduced nr methods/researchtask1.R")
+```
+
+Hub detection:
+```
+source("code/50 splits/reduced nr methods/researchtask2.R")
+```
+
+Differential network analysis: 
+```
+source("code/50 splits/reduced nr methods/researchtask3.R")
+```
+
+Clustering samples:
+```
+source("code/50 splits/reduced nr methods/researchtask4.R")
+```
+
+The results are stored in the `results/reduced nr methods` folder. 
+
+The following scripts generates Tables S.1-S.4 in the Supplement (stored in the `descriptive statistics/reduced nr methods` folder):
+```
+source("code/analyse results/reduced nr methods/generate_statistics.R")
+```
+
 
 ## Software versions
 
