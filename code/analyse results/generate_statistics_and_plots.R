@@ -48,7 +48,7 @@ ari_diff = data.frame(n = c(100, 250, 500, 1000, 4000),
                                      median(val_result_4000$ariDiff)), 
                      sd_diff = c(sd(val_result_100$ariDiff), sd(val_result_250$ariDiff),
                                  sd(val_result_500$ariDiff), sd(val_result_1000$ariDiff),
-                                 sd(val_result_4000$ariDiff)), 
+                                 sd(val_result_4000$ariDiff)),
                      mean_scaled_diff = c(mean(val_result_100$ariDiff/val_result_100$ariDiscov), mean(val_result_250$ariDiff/val_result_250$ariDiscov),
                                           mean(val_result_500$ariDiff/val_result_500$ariDiscov), mean(val_result_1000$ariDiff/val_result_1000$ariDiscov),
                                           mean(val_result_4000$ariDiff/val_result_4000$ariDiscov)),
@@ -58,6 +58,9 @@ ari_diff = data.frame(n = c(100, 250, 500, 1000, 4000),
                      sd_scaled_diff = c(sd(val_result_100$ariDiff/val_result_100$ariDiscov), sd(val_result_250$ariDiff/val_result_250$ariDiscov),
                                         sd(val_result_500$ariDiff/val_result_500$ariDiscov), sd(val_result_1000$ariDiff/val_result_1000$ariDiscov),
                                         sd(val_result_4000$ariDiff/val_result_4000$ariDiscov)))
+
+ari_diff$effect_diff = ari_diff$mean_diff/ari_diff$sd_diff
+ari_diff$effect_scaled_diff = ari_diff$mean_scaled_diff/ari_diff$sd_scaled_diff
 
 saveRDS(ari_diff, file = "descriptive statistics/clustering_ari_diff.rds")
 
@@ -137,7 +140,7 @@ for (n in 1:5) {
   p1a[[n]] = ggplot(data = res, aes(x = method, y = ari)) +
     geom_boxplot(lwd = 0.3, outlier.size = 0.6, outlier.shape = 4) + 
     geom_beeswarm(aes(colour = k_mod), cex = 0.3, size = 0.05, corral = "random", corral.width = 0.9) +
-    scale_color_manual(values = colors, name = "k") +
+    scale_color_manual(values = colors, name = "number of \nclusters") +
     guides(color = guide_legend(override.aes = list(size = 0.8))) +
     geom_vline(xintercept = c(4.5, 8.5, 12.5, 16.5)) + 
     theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("ARI") +
@@ -185,7 +188,7 @@ for (n in 1:5) {
   p1b[[n]] = ggplot(data = res, aes(x = methodNorm, y = ari)) +
     geom_boxplot(lwd = 0.3, outlier.size = 0.6, outlier.shape = 4) + 
     geom_beeswarm(aes(colour = k_mod), cex = 0.2, size = 0.1, corral = "random", corral.width = 0.9) +
-    scale_color_manual(values= colors, name = "k") +
+    scale_color_manual(values= colors, name = "number of \nclusters") +
     guides(color = guide_legend(override.aes = list(size = 0.8))) +
     geom_vline(xintercept = c(8.5, 16.5, 24.5, 32.5)) + 
     theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("ARI") +
@@ -222,9 +225,9 @@ for (n in 1:5) {
   
   p2[[n]] = ggplot(val_result) +
     geom_point(aes(x = DiscovValid, y = ari, group = split, color = k_mod)) +
-    scale_color_manual(values = colors, name = "k") +
+    scale_color_manual(values = colors, name = "number of \nclusters") +
     guides(color = guide_legend(override.aes = list(size = 0.8))) +
-    geom_line(aes(x = DiscovValid, y = ari, group = split), alpha = 0.2)+
+    geom_line(aes(x = DiscovValid, y = ari, group = split), alpha = 0.3)+
     facet_grid(.~methodNorm, scales="fixed", switch = "x", labeller = label_wrap_gen(width=10)) +
     theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + labs(x = "", y = "ARI") +
     labs(title = paste0("n = ", sample_size[n])) +
@@ -282,7 +285,7 @@ for (n in 1:5) {
   p1c[[n]] = ggplot(data = res, aes(x = methodSpars, y = ari)) +
     geom_boxplot(lwd = 0.3, outlier.size = 0.6, outlier.shape = 4) + 
     geom_beeswarm(aes(colour = k_mod), cex = 0.2, size = 0.1, corral = "random", corral.width = 0.9) +
-    scale_color_manual(values= colors, name = "k") +
+    scale_color_manual(values= colors, name = "number of \nclusters") +
     geom_vline(xintercept = c(14.5, 28.5)) + 
     theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("ARI") +
     labs(title = paste0("n = ", sample_size[n])) +
@@ -294,13 +297,13 @@ for (n in 1:5) {
     geom_beeswarm(aes(x = bestMethodSpars, y = bestAri, colour = isSparse), cex = 0.3, shape = 22, size = 0.8, stat = "unique") +
     scale_color_manual(values = c("red", NA), guide = FALSE) # the auxiliary "fake" values are made transparent 
     
-  ggsave(paste0("plots/clustering genera/p1a_", sample_size[n],".png"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
-  ggsave(paste0("plots/clustering genera/p1b_", sample_size[n],".png"), plot = p1b[[n]], dpi = 600, width = 18, height = 12, units = "cm")
-  ggsave(paste0("plots/clustering genera/p1c_", sample_size[n],".png"), plot = p1c[[n]], dpi = 600, width = 18, height = 12, units = "cm")
+  ggsave(paste0("plots/clustering genera/p1a_", sample_size[n],".pdf"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
+  ggsave(paste0("plots/clustering genera/p1b_", sample_size[n],".pdf"), plot = p1b[[n]], dpi = 600, width = 18, height = 12, units = "cm")
+  ggsave(paste0("plots/clustering genera/p1c_", sample_size[n],".pdf"), plot = p1c[[n]], dpi = 600, width = 18, height = 12, units = "cm")
   if (n == 1) {
-    ggsave(paste0("plots/clustering genera/p2_", sample_size[n],".png"), plot = p2[[n]], dpi = 600, width = 25, height = 9, units = "cm")
+    ggsave(paste0("plots/clustering genera/p2_", sample_size[n],".pdf"), plot = p2[[n]], dpi = 600, width = 25, height = 9, units = "cm")
   } else {
-    ggsave(paste0("plots/clustering genera/p2_", sample_size[n],".png"), plot = p2[[n]], dpi = 600, width = 17, height = 9, units = "cm")
+    ggsave(paste0("plots/clustering genera/p2_", sample_size[n],".pdf"), plot = p2[[n]], dpi = 600, width = 17, height = 9, units = "cm")
   }
   
 }
@@ -360,6 +363,9 @@ nrhubs_diff = data.frame(n = c(100, 250, 500, 1000, 4000),
                      sd_scaled_diff = c(sd(val_result_100$nrHubsDiff/val_result_100$nrHubsDiscov), sd(val_result_250$nrHubsDiff/val_result_250$nrHubsDiscov),
                                         sd(val_result_500$nrHubsDiff/val_result_500$nrHubsDiscov), sd(val_result_1000$nrHubsDiff/val_result_1000$nrHubsDiscov),
                                         sd(val_result_4000$nrHubsDiff/val_result_4000$nrHubsDiscov)))
+
+nrhubs_diff$effect_diff = nrhubs_diff$mean_diff/nrhubs_diff$sd_diff
+nrhubs_diff$effect_scaled_diff = nrhubs_diff$mean_scaled_diff/nrhubs_diff$sd_scaled_diff
 
 saveRDS(nrhubs_diff, file = "descriptive statistics/hub_detection_nr_hubs_diff.rds")
 
@@ -451,7 +457,7 @@ for (n in 1:5) {
   p1a[[n]] = ggplot(data = res, aes(x = method, y = nrHubs)) +
     # geom_beeswarm(cex = 0.3, size = 0.2) +
     geom_boxplot(lwd = 0.3, outlier.size = 0.5, outlier.shape = 4) +
-    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("nr of hubs") +
+    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("number of hubs") +
     labs(title = paste0("n = ", sample_size[n])) +
     ylim(-0.1, 15) + 
     geom_beeswarm(data = res[seq(1, 700, by = 14),], aes(x = bestMethod, y = highestNrHubs), groupOnX = TRUE, shape = 15, color = "red", size = 0.6) 
@@ -460,7 +466,7 @@ for (n in 1:5) {
   p1b[[n]] = ggplot(data = res, aes(x = methodSpars, y = nrHubs)) +
     # geom_beeswarm(groupOnX = TRUE, cex = 0.3, size = 0.2) +
     geom_boxplot(lwd = 0.3, outlier.size = 0.5, outlier.shape = 4) +
-    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("nr of hubs") +
+    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("number of hubs") +
     labs(title = paste0("n = ", sample_size[n])) +
     ylim(-0.1, 15) + 
     geom_beeswarm(data = res[seq(1, 700, by = 14),], aes(x = bestMethodSpars, y = highestNrHubs), groupOnX = TRUE, shape = 15, color = "red", size = 0.6) 
@@ -502,10 +508,10 @@ for (n in 1:5) {
     scale_color_manual(values=c("red", "black")) +
     scale_shape_manual(values = c(15, 20)) + 
     theme(legend.position = "none") +
-    geom_line(aes(x = DiscovValid, y = nrHubs, group = split), alpha = 0.2)+
+    geom_line(aes(x = DiscovValid, y = nrHubs, group = split), alpha = 0.3) + #, position = position_dodge(width = 0.2))+
     facet_grid(.~methodSpars, scales="fixed", switch = "x", labeller = label_wrap_gen(width=10)) +
     theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + #, strip.text.x = element_text(angle = 70, hjust = -0.5)) + 
-    labs(x = "", y = "nr of hubs") +
+    labs(x = "", y = "number of hubs") +
     labs(title = paste0("n = ", sample_size[n])) +
     ylim(0.00, 15) +
     #theme_bw() +
@@ -514,9 +520,9 @@ for (n in 1:5) {
     theme(strip.placement = 'outside',
           strip.background.x = element_blank())
   
-  ggsave(paste0("plots/hub detection/p1a_", sample_size[n],".png"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
-  ggsave(paste0("plots/hub detection/p1b_", sample_size[n],".png"), plot = p1b[[n]], dpi = 600, width = 15, height = 12, units = "cm")
-  ggsave(paste0("plots/hub detection/p2_", sample_size[n],".png"), plot = p2[[n]], dpi = 600, width = 15, height = 9, units = "cm")
+  ggsave(paste0("plots/hub detection/p1a_", sample_size[n],".pdf"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
+  ggsave(paste0("plots/hub detection/p1b_", sample_size[n],".pdf"), plot = p1b[[n]], dpi = 600, width = 15, height = 12, units = "cm")
+  ggsave(paste0("plots/hub detection/p2_", sample_size[n],".pdf"), plot = p2[[n]], dpi = 600, width = 17, height = 9, units = "cm")
   
   
 }
@@ -564,6 +570,9 @@ gcd_diff = data.frame(n = c(100, 250, 500),
                                              median(val_result_500$gcdDiff/val_result_500$gcdDiscov)),
                       sd_scaled_diff = c(sd(val_result_100$gcdDiff/val_result_100$gcdDiscov), sd(val_result_250$gcdDiff/val_result_250$gcdDiscov),
                                          sd(val_result_500$gcdDiff/val_result_500$gcdDiscov)))
+
+gcd_diff$effect_diff = gcd_diff$mean_diff/gcd_diff$sd_diff
+gcd_diff$effect_scaled_diff = gcd_diff$mean_scaled_diff/gcd_diff$sd_scaled_diff
 
 saveRDS(gcd_diff, file = "descriptive statistics/diff_network_gcd_diff.rds")
 
@@ -680,7 +689,7 @@ for (n in 1:3) {
     scale_color_manual(values=c("red", "black")) +
     scale_shape_manual(values = c(15, 20)) + 
     theme(legend.position = "none") +
-    geom_line(aes(x = DiscovValid, y = gcd, group = split), alpha = 0.2)+
+    geom_line(aes(x = DiscovValid, y = gcd, group = split), alpha = 0.3)+
     facet_grid(.~methodSpars, scales="fixed", switch = "x", labeller = label_wrap_gen(width=8)) +
     theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + labs(x = "", y = "GCD") +
     labs(title = paste0("n = ", sample_size[n])) +
@@ -691,8 +700,259 @@ for (n in 1:3) {
     theme(strip.placement = 'outside',
           strip.background.x = element_blank())
   
-  ggsave(paste0("plots/differential network analysis/p1a_", sample_size[n],".png"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
-  ggsave(paste0("plots/differential network analysis/p1b_", sample_size[n],".png"), plot = p1b[[n]], dpi = 600, width = 15, height = 12, units = "cm")
-  ggsave(paste0("plots/differential network analysis/p2_", sample_size[n],".png"), plot = p2[[n]], dpi = 600, width = 15, height = 9, units = "cm")
+  ggsave(paste0("plots/differential network analysis/p1a_", sample_size[n],".pdf"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
+  ggsave(paste0("plots/differential network analysis/p1b_", sample_size[n],".pdf"), plot = p1b[[n]], dpi = 600, width = 15, height = 12, units = "cm")
+  ggsave(paste0("plots/differential network analysis/p2_", sample_size[n],".pdf"), plot = p2[[n]], dpi = 600, width = 15, height = 9, units = "cm")
+  
+}
+
+########################################################################################################
+### Clustering samples ##################################################################################
+########################################################################################################
+
+# read and restructure results ##
+
+clust_samples_results_100 = readRDS("results/clustering samples/clust_samples_results_100.rds")
+clust_samples_results_250 = readRDS("results/clustering samples/clust_samples_results_250.rds")
+clust_samples_results_500 = readRDS("results/clustering samples/clust_samples_results_500.rds")
+clust_samples_results_1000 = readRDS("results/clustering samples/clust_samples_results_1000.rds")
+clust_samples_results_3500 = readRDS("results/clustering samples/clust_samples_results_3500.rds")
+
+for (n in c(100, 250, 500, 1000, 3500)) {
+  clust_samples_results = vector(mode = "list", length = 50)
+  for (i in 1:5) {
+    for (s in 1:10) {
+      clust_samples_results[[(i-1)*10+s]] = get(paste0("clust_samples_results_", n))[[i]][[s]] 
+    }
+  }
+  
+  val_result = clust_samples_results[[1]]$val_result
+  for (i in 2:50) {
+    val_result = rbind(val_result, clust_samples_results[[i]]$val_result)
+  }
+  val_result$swDiff = val_result$swValid - val_result$swDiscov
+  
+  assign(paste0("clust_samples_results_", n), clust_samples_results)
+  assign(paste0("val_result_", n), val_result)
+  
+}
+
+
+# descriptive statistics for SW difference ##
+
+sw_diff = data.frame(n = c(100, 250, 500, 1000, 3500), 
+                      mean_diff = c(mean(val_result_100$swDiff), mean(val_result_250$swDiff),
+                                    mean(val_result_500$swDiff), mean(val_result_1000$swDiff),
+                                    mean(val_result_3500$swDiff)), 
+                      median_diff = c(median(val_result_100$swDiff), median(val_result_250$swDiff),
+                                      median(val_result_500$swDiff), median(val_result_1000$swDiff),
+                                      median(val_result_3500$swDiff)), 
+                      sd_diff = c(sd(val_result_100$swDiff), sd(val_result_250$swDiff),
+                                  sd(val_result_500$swDiff), sd(val_result_1000$swDiff),
+                                  sd(val_result_3500$swDiff)), 
+                      mean_scaled_diff = c(mean(val_result_100$swDiff/val_result_100$swDiscov), mean(val_result_250$swDiff/val_result_250$swDiscov),
+                                           mean(val_result_500$swDiff/val_result_500$swDiscov), mean(val_result_1000$swDiff/val_result_1000$swDiscov),
+                                           mean(val_result_3500$swDiff/val_result_3500$swDiscov)),
+                      median_scaled_diff = c(median(val_result_100$swDiff/val_result_100$swDiscov), median(val_result_250$swDiff/val_result_250$swDiscov),
+                                             median(val_result_500$swDiff/val_result_500$swDiscov), median(val_result_1000$swDiff/val_result_1000$swDiscov),
+                                             median(val_result_3500$swDiff/val_result_3500$swDiscov)),
+                      sd_scaled_diff = c(sd(val_result_100$swDiff/val_result_100$swDiscov), sd(val_result_250$swDiff/val_result_250$swDiscov),
+                                         sd(val_result_500$swDiff/val_result_500$swDiscov), sd(val_result_1000$swDiff/val_result_1000$swDiscov),
+                                         sd(val_result_3500$swDiff/val_result_3500$swDiscov)))
+
+sw_diff$effect_diff = sw_diff$mean_diff/sw_diff$sd_diff
+sw_diff$effect_scaled_diff = sw_diff$mean_scaled_diff/sw_diff$sd_scaled_diff
+
+saveRDS(sw_diff, file = "descriptive statistics/clustering_sw_diff.rds")
+
+# plots ##
+
+gg_color_hue = function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+colors = gg_color_hue(11)
+names(colors) = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", ">10")
+
+clust_results = list(clust_samples_results_100, clust_samples_results_250,clust_samples_results_500, 
+                     clust_samples_results_1000, clust_samples_results_3500)
+val_results = list(val_result_100, val_result_250, val_result_500, val_result_1000, val_result_3500)
+sample_size = c(100, 250, 500, 1000, 3500)
+p1a = list() # results for clustering on the discovery data, not separated by either normalization or sparsification methods
+p1b = list() # results for clustering on the discovery data, separated by normalization, but not sparsification methods
+p1c = list() # results for network-based clustering on the discovery data, separated by normalization and sparsification methods
+p2 = list() # best ASWs for the clustering of bacterial genera on the discovery data, compared with the results on validation data; methods separated by
+# normalization, but not sparsification methods
+
+for (n in 1:5) {
+  
+  val_results[[n]]$clustAlgo = recode(val_results[[n]]$clustAlgo, "cluster_fast_greedy" = "fg.modular", "cluster_louvain" = "louvain")
+  val_results[[n]]$method = paste(val_results[[n]]$clustAlgo, val_results[[n]]$measure, sep = ", ")
+  # DMM does not require any dissimilarity calculation  
+  # val_results[[n]]$method = gsub(pattern = "dmm, countMat", replacement = "dmm, none", x = val_results[[n]]$method)
+  val_results[[n]]$methodNorm = paste(val_results[[n]]$clustAlgo, val_results[[n]]$measure, val_results[[n]]$normMethod, sep = ", ")
+  # function for Aitchison distance has inbuilt normalization; include this information here 
+  val_results[[n]]$methodNorm = gsub(pattern = "aitchison, fractions", replacement = "aitchison, clr", x = val_results[[n]]$methodNorm)
+  val_results[[n]]$methodSpars = paste(val_results[[n]]$clustAlgo, val_results[[n]]$measure, val_results[[n]]$normMethod, val_results[[n]]$sparsMethod, sep = ", ")
+  val_results[[n]]$asw = val_results[[n]]$swDiscov
+  
+  clust_results[[n]][[1]]$res$split = 1
+  clust_results[[n]][[1]]$res$bestAsw = val_results[[n]][1,"swDiscov"]
+  clust_results[[n]][[1]]$res$bestMethod = val_results[[n]][1,"method"]
+  clust_results[[n]][[1]]$res$bestMethodNorm = val_results[[n]][1,"methodNorm"]
+  clust_results[[n]][[1]]$res$bestMethodSpars = val_results[[n]][1,"methodSpars"]
+  res = clust_results[[n]][[1]]$res
+  for (i in 2:50) {
+    clust_results[[n]][[i]]$res$split = i
+    clust_results[[n]][[i]]$res$bestAsw = val_results[[n]][i,"swDiscov"]
+    clust_results[[n]][[i]]$res$bestMethod = val_results[[n]][i,"method"]
+    clust_results[[n]][[i]]$res$bestMethodNorm = val_results[[n]][i,"methodNorm"]
+    clust_results[[n]][[i]]$res$bestMethodSpars = val_results[[n]][i,"methodSpars"]
+    res = rbind(res, clust_results[[n]][[i]]$res)
+  }
+  
+  res$clustAlgo = recode(res$clustAlgo, "cluster_fast_greedy" = "fg.modular", "cluster_louvain" = "louvain")
+  res$method = paste(res$clustAlgo, res$measure, sep = ", ")
+  # res$method = gsub(pattern = "dmm, countMat", replacement = "dmm, none", x = res$method)
+  res$method = factor(res$method, ordered = TRUE, levels = c("dmm, countMat", "pam, aitchison", "pam, euclidean", "pam, ckld", "pam, bray",
+                                                             "spectral, aitchison", "spectral, euclidean", "spectral, ckld", "spectral, bray",
+                                                             "fg.modular, aitchison", "fg.modular, euclidean", "fg.modular, ckld", "fg.modular, bray", 
+                                                             "louvain, aitchison", "louvain, euclidean", "louvain, ckld", "louvain, bray"))
+  
+  res$k_mod = ifelse(res$k <= 10, res$k, ">10")
+  res$k_mod = factor(res$k_mod, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", ">10"))
+  
+  p1a[[n]] = ggplot(data = res, aes(x = method, y = sw)) +
+    geom_boxplot(lwd = 0.3, outlier.size = 0.6, outlier.shape = 4) + 
+    geom_beeswarm(aes(colour = k_mod), cex = 0.3, size = 0.05, corral = "random", corral.width = 0.9) +
+    scale_color_manual(values = colors, name = "number of \nclusters") +
+    guides(color = guide_legend(override.aes = list(size = 0.8))) +
+    geom_vline(xintercept = c(1.5, 5.5, 9.5, 13.5)) + 
+    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("ASW") +
+    labs(title = paste0("n = ", sample_size[n])) +
+    annotate("text", label = "DMM", x = 0.9, y = 0.4, size = 2) +
+    annotate("text", label = "PAM", x = 2.3, y = 0.4, size = 2) +
+    annotate("text", label = "spectral", x = 6.4, y = 0.4, size = 2) +
+    annotate("text", label = "fast greedy modularity", x = 11.4, y = 0.4, size = 2) +
+    annotate("text", label = "Louvain", x = 14.4, y = 0.4, size = 2) +
+    ylim(-0.06, 0.40) + 
+    geom_beeswarm(aes(x = bestMethod, y = bestAsw), cex = 0.3, shape = 22, color = "red", size = 0.8, stat = "unique") 
+  
+  
+  levels_norm = c("dmm, countMat, none", "pam, aitchison, clr", "pam, euclidean, VST", "pam, euclidean, mclr", "pam, ckld, fractions", "pam, bray, mclr",
+                  "spectral, aitchison, clr", "spectral, euclidean, VST", "spectral, euclidean, mclr", "spectral, ckld, fractions", "spectral, bray, mclr",
+                  "fg.modular, aitchison, clr", "fg.modular, euclidean, VST", "fg.modular, euclidean, mclr", "fg.modular, ckld, fractions", "fg.modular, bray, mclr",
+                  "louvain, aitchison, clr", "louvain, euclidean, VST", "louvain, euclidean, mclr", "louvain, ckld, fractions", "louvain, bray, mclr")
+  
+  res$methodNorm = paste(res$clustAlgo, res$measure, res$normMethod, sep = ", ")
+  res$methodNorm = gsub(pattern = "aitchison, fractions", replacement = "aitchison, clr", x = res$methodNorm)
+  res$methodNorm = factor(res$methodNorm, ordered = TRUE, levels = levels_norm)
+  
+  res$bestMethodNorm = gsub(pattern = "aitchison, fractions", replacement = "aitchison, none", x = res$bestMethodNorm)
+  res$bestMethodNorm = factor(res$bestMethodNorm, ordered = TRUE, levels = levels_norm)
+  
+  
+  p1b[[n]] = ggplot(data = res, aes(x = methodNorm, y = sw)) +
+    geom_boxplot(lwd = 0.3, outlier.size = 0.6, outlier.shape = 4) + 
+    geom_beeswarm(aes(colour = k_mod), cex = 0.2, size = 0.1, corral = "random", corral.width = 0.9) +
+    scale_color_manual(values= colors, name = "number of \nclusters") +
+    guides(color = guide_legend(override.aes = list(size = 0.8))) +
+    geom_vline(xintercept = c(1.5, 6.5, 11.5, 16.5)) + 
+    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("ASW") +
+    labs(title = paste0("n = ", sample_size[n])) +
+    annotate("text", label = "DMM", x = 0.9, y = 0.4, size = 2) +
+    annotate("text", label = "PAM", x = 2.3, y = 0.4, size = 2) +
+    annotate("text", label = "spectral", x = 7.4, y = 0.4, size = 2) +
+    annotate("text", label = "fast greedy modularity", x = 13.4, y = 0.4, size = 2) +
+    annotate("text", label = "Louvain", x = 17.4, y = 0.4, size = 2) +
+    ylim(-0.06, 0.40) + 
+    geom_beeswarm(aes(x = bestMethodNorm, y = bestAsw), cex = 0.3, shape = 22, color = "red", size = 0.8, stat = "unique") 
+  
+  val_results[[n]]$k_mod_discov = ifelse(val_results[[n]]$kDiscov <= 10, val_results[[n]]$kDiscov, ">10")
+  val_results[[n]]$k_mod_discov = factor(val_results[[n]]$k_mod_discov, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", ">10"))
+  val_results[[n]]$k_mod_valid = ifelse(val_results[[n]]$kValid <= 10, val_results[[n]]$kValid, ">10")
+  val_results[[n]]$k_mod_valid = factor(val_results[[n]]$k_mod_valid, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", ">10"))
+  
+  val_results[[n]]$split = 1:50
+  val_result1 = val_results[[n]]
+  val_result1$DiscovValid = "discov"
+  val_result2 = val_results[[n]]
+  val_result2$DiscovValid = "valid"
+  
+  val_result1$asw = val_result1$swDiscov
+  val_result2$asw = val_result2$swValid
+  
+  val_result1$k_mod = val_result1$k_mod_discov
+  val_result2$k_mod = val_result2$k_mod_valid
+  
+  val_result = rbind(val_result1, val_result2)
+  
+  val_result$methodNorm = factor(val_result$methodNorm, ordered = TRUE, levels = levels_norm)
+  
+  p2[[n]] = ggplot(val_result) +
+    geom_point(aes(x = DiscovValid, y = asw, group = split, color = k_mod)) +
+    scale_color_manual(values = colors, name = "number of \nclusters") +
+    guides(color = guide_legend(override.aes = list(size = 0.8))) +
+    geom_line(aes(x = DiscovValid, y = asw, group = split), alpha = 0.3)+
+    facet_grid(.~methodNorm, scales="fixed", switch = "x", labeller = label_wrap_gen(width=10)) +
+    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + labs(x = "", y = "ASW") +
+    labs(title = paste0("n = ", sample_size[n])) +
+    ylim(0.0, 0.40) +
+    theme(panel.spacing.x = unit(0,"line")) +
+    theme(strip.placement = 'outside',
+          strip.background.x = element_blank())
+  
+  
+  res = res[res$clustAlgo %in% c("louvain", "fg.modular"),]
+  res$isSparse = "sparse"
+  res$isSparse[!grepl(pattern = 'fg.modular|louvain', x = res$bestMethodSpars)] = "not sparse"
+  res$isSparse = factor(res$isSparse, ordered = TRUE, levels = c("sparse", "not sparse"))
+  
+  levels_sparse = c("fg.modular, aitchison, clr, threshold", "fg.modular, aitchison, clr, knn", 
+                    "fg.modular, euclidean, VST, threshold", "fg.modular, euclidean, VST, knn",
+                    "fg.modular, euclidean, mclr, threshold", "fg.modular, euclidean, mclr, knn",
+                    "fg.modular, ckld, fractions, threshold", "fg.modular, ckld, fractions, knn",
+                    "fg.modular, bray, mclr, threshold", "fg.modular, bray, mclr, knn",
+                    "louvain, aitchison, clr, threshold", "louvain, aitchison, clr, knn", 
+                    "louvain, euclidean, VST, threshold", "louvain, euclidean, VST, knn",
+                    "louvain, euclidean, mclr, threshold", "louvain, euclidean, mclr, knn",
+                    "louvain, ckld, fractions, threshold", "louvain, ckld, fractions, knn",
+                    "louvain, bray, mclr, threshold", "louvain, bray, mclr, knn")
+  
+  res$methodSpars = paste(res$clustAlgo, res$measure, res$normMethod, res$sparsMethod, sep = ", ")
+  res$methodSpars = gsub(pattern = "aitchison, fractions", replacement = "aitchison, clr", x = res$methodSpars)
+  res$methodSpars = factor(res$methodSpars, ordered = TRUE, levels = levels_sparse)
+  
+  res$bestMethodSpars = gsub(pattern = "aitchison, fractions", replacement = "aitchison, clr", x = res$bestMethodSpars)
+  
+  # for the splits in which hierarchical or spectral clustering was chosen as the best method,
+  # replace bestMethodSpars with an auxiliary "fake value" (here: "manta, pearson, clr, t-test")
+  # These fake values will not be seen in the final plot,
+  # and merely serve to keep the correct order of the method levels.
+  res$bestMethodSpars[!grepl(pattern = 'fg.modular|louvain', x = res$bestMethodSpars)] = "fg.modular, aitchison, clr, knn"
+  res$bestMethodSpars = factor(res$bestMethodSpars, ordered = TRUE, levels = levels_sparse)
+  
+  p1c[[n]] = ggplot(data = res, aes(x = methodSpars, y = sw)) +
+    geom_boxplot(lwd = 0.3, outlier.size = 0.6, outlier.shape = 4) + 
+    geom_beeswarm(aes(colour = k_mod), cex = 0.2, size = 0.1, corral = "random", corral.width = 0.9) +
+    scale_color_manual(values= colors, name = "number of \nclusters") +
+    geom_vline(xintercept = c(10.5)) + 
+    theme(axis.title.x=element_blank(), axis.text.x = element_text(angle = 70, hjust = 1)) + ylab("ASW") +
+    labs(title = paste0("n = ", sample_size[n])) +
+    annotate("text", label = "fast greedy modularity", x = 2.2, y = 0.4, size = 2) +
+    annotate("text", label = "Louvain", x = 11.8, y = 0.4, size = 2) +
+    ylim(-0.06, 0.4) + 
+    new_scale_color() +
+    geom_beeswarm(aes(x = bestMethodSpars, y = bestAsw, colour = isSparse), cex = 0.3, shape = 22, size = 0.8, stat = "unique") +
+    scale_color_manual(values = c("red", NA), guide = FALSE) # the auxiliary "fake" values are made transparent 
+  
+  ggsave(paste0("plots/clustering samples/p1a_", sample_size[n],".pdf"), plot = p1a[[n]], dpi = 600, width = 15, height = 12, units = "cm")
+  ggsave(paste0("plots/clustering samples/p1b_", sample_size[n],".pdf"), plot = p1b[[n]], dpi = 600, width = 18, height = 12, units = "cm")
+  ggsave(paste0("plots/clustering samples/p1c_", sample_size[n],".pdf"), plot = p1c[[n]], dpi = 600, width = 18, height = 12, units = "cm")
+  if (n == 1) {
+    ggsave(paste0("plots/clustering samples/p2_", sample_size[n],".pdf"), plot = p2[[n]], dpi = 600, width = 18, height = 9, units = "cm")
+  } else {
+    ggsave(paste0("plots/clustering samples/p2_", sample_size[n],".pdf"), plot = p2[[n]], dpi = 600, width = 15, height = 9, units = "cm")
+  }
   
 }

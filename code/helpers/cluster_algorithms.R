@@ -7,6 +7,14 @@ hier.cluster = function(dissMat, k, linkage = "average") {
   return(list("cluster" = cluster))
 }
 
+# Partitioning around medoids #########################################################################
+
+pam.cluster = function(dissMat, k) {
+  cluster = cluster::pam(as.dist(dissMat), k)$clustering
+  names(cluster) = dimnames(dissMat)[[1]]
+  return(list("cluster" = cluster))
+}
+
 
 # Spectral clustering #################################################################################
 
@@ -121,6 +129,9 @@ clustering = function(dissMat = NULL, assoMat = NULL, adjaMat = NULL, algo = "hi
     clustPar$dissMat = dissMat
     cluster = do.call("hier.cluster", clustPar)
     # clustPar must contain k = k, linkage = "average"
+  } else if (algo == "pam") {
+    clustPar$dissMat = dissMat
+    cluster = do.call("pam.cluster", clustPar)
   } else if (algo == "spectral") {
     clustPar$simMat = adjaMat
     cluster = do.call("spectral.cluster", clustPar)
