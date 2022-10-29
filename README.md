@@ -91,22 +91,22 @@ The results for the analyses with less method combinations can be obtained by ru
 
 Clustering bacterial genera:
 ```
-source("code/50 splits/reduced nr methods/researchtask1.R")
+source("code/50 splits/reduced nr methods/researchtask1_reduced.R")
 ```
 
 Hub detection:
 ```
-source("code/50 splits/reduced nr methods/researchtask2.R")
+source("code/50 splits/reduced nr methods/researchtask2_reduced.R")
 ```
 
 Differential network analysis: 
 ```
-source("code/50 splits/reduced nr methods/researchtask3.R")
+source("code/50 splits/reduced nr methods/researchtask3_reduced.R")
 ```
 
 Clustering samples:
 ```
-source("code/50 splits/reduced nr methods/researchtask4.R")
+source("code/50 splits/reduced nr methods/researchtask4_reduced.R")
 ```
 
 The results are stored in the `results/reduced nr methods` folder. 
